@@ -11,7 +11,10 @@ import (
 func main() {
 	const letterboxdRSS = "https://letterboxd.com/akashgoswami/rss/"
 
-	latestMovieItems := getFeedItems(letterboxdRSS)
+	latestMovieItems, err := getFeedItems(letterboxdRSS)
+	if err != nil {
+		log.Fatalf("unable to parse rss url. Error: %v", err)
+	}
 
 	max := 3 // Maximum number of movies to retrieve from feed
 	if len(latestMovieItems) < max {
@@ -31,19 +34,19 @@ func main() {
 	}
 }
 
-func getFeedItems(input string) []gofeed.Item {
+func getFeedItems(input string) ([]gofeed.Item, error) {
 	feedItems := []gofeed.Item{}
 
 	feedParser := gofeed.NewParser()
 	feed, err := feedParser.ParseURL(input)
 
 	if err != nil {
-		log.Fatalf("unable to parse letterboxd rss url. Error: %v", err)
+		return nil, err
 	}
 
 	for _, item := range feed.Items {
 		feedItems = append(feedItems, *item)
 	}
 
-	return feedItems
+	return feedItems, nil
 }
