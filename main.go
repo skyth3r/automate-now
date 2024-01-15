@@ -10,17 +10,8 @@ import (
 
 func main() {
 	const letterboxdRSS = "https://letterboxd.com/akashgoswami/rss/"
-	latestMovieItems := []gofeed.Item{}
 
-	feedParser := gofeed.NewParser()
-	latestMoviesFeed, err := feedParser.ParseURL(letterboxdRSS)
-	if err != nil {
-		log.Fatalf("unable to parse letterboxd rss url. Error: %v", err)
-	}
-
-	for _, item := range latestMoviesFeed.Items {
-		latestMovieItems = append(latestMovieItems, *item)
-	}
+	latestMovieItems := getFeedItems(letterboxdRSS)
 
 	max := 3 // Maximum number of movies to retrieve from feed
 	if len(latestMovieItems) < max {
@@ -38,5 +29,21 @@ func main() {
 		splittedTitle := re.Split(latestMovieItems[i].Title, -1)
 		fmt.Printf("Title: %v\n", splittedTitle[0])
 	}
+}
 
+func getFeedItems(input string) []gofeed.Item {
+	feedItems := []gofeed.Item{}
+
+	feedParser := gofeed.NewParser()
+	feed, err := feedParser.ParseURL(input)
+
+	if err != nil {
+		log.Fatalf("unable to parse letterboxd rss url. Error: %v", err)
+	}
+
+	for _, item := range feed.Items {
+		feedItems = append(feedItems, *item)
+	}
+
+	return feedItems
 }
