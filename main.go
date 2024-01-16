@@ -10,6 +10,7 @@ import (
 
 func main() {
 	const letterboxdRSS = "https://letterboxd.com/akashgoswami/rss/"
+	const okuRSS = "https://oku.club/rss/collection/T8k9M"
 
 	latestMovieItems, err := getFeedItems(letterboxdRSS)
 	if err != nil {
@@ -26,6 +27,16 @@ func main() {
 	re := regexp.MustCompile(movieTitlePattern)
 
 	printMovieTitles(latestMovieItems, itemCount, re)
+
+	latestBookItems, err := getFeedItems(okuRSS)
+	if err != nil {
+		log.Fatalf("unable to parse rss url. Error: %v", err)
+	}
+
+	itemCount = maxItems(latestBookItems)
+
+	printBookInfo(latestBookItems, itemCount)
+
 }
 
 func getFeedItems(input string) ([]gofeed.Item, error) {
@@ -57,5 +68,14 @@ func printMovieTitles(items []gofeed.Item, count int, re *regexp.Regexp) {
 	for i := 0; i < count; i++ {
 		title := re.Split(items[i].Title, -1)
 		fmt.Printf("Title: %v\n", title[0])
+	}
+}
+
+func printBookInfo(items []gofeed.Item, count int) {
+	for i := 0; i < count; i++ {
+		fmt.Println(items[i].Title)
+		fmt.Println(items[i].Link)
+		fmt.Println(items[i].Extensions["dc"]["creator"][0].Value) // author
+		fmt.Println(items[i].Extensions["oku"]["cover"][0].Value)  // book cover url
 	}
 }
