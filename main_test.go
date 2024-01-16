@@ -75,6 +75,8 @@ func TestMaxItems_ExactlyThreeItems(t *testing.T) {
 }
 
 func TestMovieTitlePattern(t *testing.T) {
+	const movieTitlePattern = `, (\d{4})(?: - ?[★]{0,5})?$`
+
 	tests := []struct {
 		title    string
 		expected string
@@ -91,7 +93,6 @@ func TestMovieTitlePattern(t *testing.T) {
 		{"Movie Title - ★★★★★", "Movie Title - ★★★★★"}, // Edge case: Rating but no year
 	}
 
-	const movieTitlePattern = `, (\d{4})(?: - ?[★]{0,5})?$`
 	re := regexp.MustCompile(movieTitlePattern)
 
 	for _, tc := range tests {

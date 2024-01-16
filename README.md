@@ -26,3 +26,12 @@ The RSS url is formatted in the following format:
 `https://letterboxd.com/USERNAME_HERE/rss/`
 
 Simply replace the USERNAME_HERE part with any Letterboxd username to view their RSS feed.
+
+### 📚 [Oku](https://oku.club)
+Oku provides [an RSS feed for each collection](https://oku.club/blog/oku-has-rss-feeds) for a user. By default users of Oku will have three collections; To Read, Reading and Read.
+
+Finding this feed url isn't super straight forward as there's no icon for it in the web app. Intead to get this url, you'll need to right click the page and select 'Inspect' (or View Page Source) and then under the body tag you should see a line like this:
+
+`<link rel="alternate" type="application/rss+xml" href="https://oku.club/rss/collection/UNIQUE_STRING_HERE">`
+
+The url listed here is the RSS feed for your collection - Most folks will want to use the default 'Reading' collection for this script.
