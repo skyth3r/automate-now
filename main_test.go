@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetFeedItems_Success(t *testing.T) {
@@ -21,9 +22,8 @@ func TestGetFeedItems_Error(t *testing.T) {
 	const mockRSS = "https://akashgoswami.com/invalid_rss"
 
 	_, err := getFeedItems(mockRSS)
-	if err == nil {
-		t.Errorf("unable to parse rss url. Error: %v", err)
-	}
+
+	require.NotNil(t, err)
 }
 
 func TestMaxItems_MoreThanThreeItems(t *testing.T) {
