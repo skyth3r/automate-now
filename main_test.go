@@ -9,13 +9,11 @@ import (
 )
 
 func TestGetFeedItems_Success(t *testing.T) {
-
 	const mockRSS = "https://akashgoswami.com/index.xml"
 
 	_, err := getFeedItems(mockRSS)
-	if err != nil {
-		t.Errorf("unable to parse rss url. Error: %v", err)
-	}
+
+	require.Nil(t, err)
 }
 
 func TestGetFeedItems_Error(t *testing.T) {
@@ -37,10 +35,8 @@ func TestMaxItems_MoreThanThreeItems(t *testing.T) {
 	const expectedMax = 3
 
 	got := maxItems(mockItems)
-	if got != expectedMax {
-		t.Errorf("got %v, expected %v", got, expectedMax)
-	}
 
+	require.Equal(t, expectedMax, got)
 }
 
 func TestMaxItems_LessThanThreeItems(t *testing.T) {
@@ -52,10 +48,8 @@ func TestMaxItems_LessThanThreeItems(t *testing.T) {
 	const expectedMax = 2
 
 	got := maxItems(mockItems)
-	if got != expectedMax {
-		t.Errorf("got %v, expected %v", got, expectedMax)
-	}
 
+	require.Equal(t, expectedMax, got)
 }
 
 func TestMaxItems_ExactlyThreeItems(t *testing.T) {
@@ -68,10 +62,8 @@ func TestMaxItems_ExactlyThreeItems(t *testing.T) {
 	const expectedMax = 3
 
 	got := maxItems(mockItems)
-	if got != expectedMax {
-		t.Errorf("got %v, expected %v", got, expectedMax)
-	}
 
+	require.Equal(t, expectedMax, got)
 }
 
 func TestMovieTitlePattern(t *testing.T) {
@@ -97,8 +89,7 @@ func TestMovieTitlePattern(t *testing.T) {
 
 	for _, tc := range tests {
 		got := re.Split(tc.title, -1)[0]
-		if got != tc.expected {
-			t.Errorf("got %v, expected %v", got, tc.expected)
-		}
+
+		require.Equal(t, tc.expected, got)
 	}
 }
