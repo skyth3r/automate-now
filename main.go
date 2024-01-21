@@ -8,6 +8,35 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
+type SerializdDiary struct {
+	Reviews      []SerializdDiaryReview `json:"reviews"`
+	TotalPages   int                    `json:"total_pages"`
+	TotalReviews int                    `json:"total_reviews"`
+}
+
+type SerializdDiaryReview struct {
+	ID              int          `json:"id"`
+	ShowID          string       `json:"show_id"`
+	SeasonID        string       `json:"season_id"`
+	DateAdded       string       `json:"date_added"`
+	Rating          int          `json:"rating"`
+	ReviewText      string       `json:"review_text"`
+	Author          string       `json:"author"`
+	AuthorImageUrl  string       `json:"author_image_url"`
+	ContainsSpoiler bool         `json:"containsSpoilers"`
+	BackDate        string       `json:"backdate"`
+	ShowName        string       `json:"showName"`
+	ShowBannerImage string       `json:"showBannerImage"`
+	ShowSeasons     []ShowSeason `json:"showSeasons"`
+}
+
+type ShowSeason struct {
+	ID           int    `json:"id"`
+	Name         string `json:"name"`
+	SeasonNumber int    `json:"seasonNumber"`
+	PosterPath   string `json:"posterPath"`
+}
+
 func main() {
 	const letterboxdRSS = "https://letterboxd.com/akashgoswami/rss/"
 	const okuRSS = "https://oku.club/rss/collection/T8k9M"
