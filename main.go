@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"regexp"
+	"slices"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -44,6 +47,7 @@ type ShowSeason struct {
 func main() {
 	const letterboxdRSS = "https://letterboxd.com/akashgoswami/rss/"
 	const okuRSS = "https://oku.club/rss/collection/T8k9M"
+	const serializdDiaryJSON = "https://www.serializd.com/api/user/akashgoswami/diary"
 
 	latestMovieItems, err := getFeedItems(letterboxdRSS)
 	if err != nil {
@@ -70,6 +74,35 @@ func main() {
 
 	printBookInfo(latestBookItems, itemCount)
 
+	// TV Shows
+	rsp, err := http.Get(serializdDiaryJSON)
+	if err != nil {
+		log.Fatalf("unable to get json from serializd. Error: %v", err)
+	}
+	defer rsp.Body.Close()
+
+	if rsp.StatusCode != http.StatusOK {
+		log.Fatalf("unexpected status code: %v", rsp.StatusCode)
+	}
+
+	var diary SerializdDiary
+
+	err = json.NewDecoder(rsp.Body).Decode(&diary)
+	if err != nil {
+		log.Fatalf("unable to decode json. Error: %v", err)
+	}
+
+	reviews := diary.Reviews
+
+	var showNames []string
+
+	for r := range reviews {
+		review := reviews[r]
+		if !slices.Contains(showNames, review.ShowName) {
+			showNames = append(showNames, review.ShowName)
+		}
+	}
+	fmt.Printf("%v\n", showNames)
 }
 
 func getFeedItems(input string) ([]gofeed.Item, error) {

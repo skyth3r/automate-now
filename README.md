@@ -35,3 +35,10 @@ Finding this feed url isn't super straight forward as there's no icon for it in 
 `<link rel="alternate" type="application/rss+xml" href="https://oku.club/rss/collection/UNIQUE_STRING_HERE">`
 
 The url listed here is the RSS feed for your collection - Most folks will want to use the default 'Reading' collection for this script.
+
+### 📺 [Serializd](https://www.serializd.com/)
+Serializd does **not** provide an RSS feed for users but is it possible to retrieve data in a JSON format using their API.
+
+For this script I've used the Diary API endpoint (`https://www.serializd.com/api/user/USERNAME_HERE/diary`) to retrieve recently watched TV shows that have been logged.
+
+To add an episode to your diary, click the 'Log/Review' button for the episode and add a date for when you watched the episode.
