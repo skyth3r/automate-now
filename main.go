@@ -15,19 +15,23 @@ type SerializdDiary struct {
 }
 
 type SerializdDiaryReview struct {
-	ID              int          `json:"id"`
-	ShowID          string       `json:"show_id"`
-	SeasonID        string       `json:"season_id"`
-	DateAdded       string       `json:"date_added"`
-	Rating          int          `json:"rating"`
-	ReviewText      string       `json:"review_text"`
-	Author          string       `json:"author"`
-	AuthorImageUrl  string       `json:"author_image_url"`
-	ContainsSpoiler bool         `json:"containsSpoilers"`
-	BackDate        string       `json:"backdate"`
-	ShowName        string       `json:"showName"`
-	ShowBannerImage string       `json:"showBannerImage"`
-	ShowSeasons     []ShowSeason `json:"showSeasons"`
+	ID               int          `json:"id"`
+	ShowID           string       `json:"show_id"`
+	SeasonID         string       `json:"season_id"`
+	DateAdded        string       `json:"date_added"`
+	Rating           int          `json:"rating"`
+	ReviewText       string       `json:"review_text"`
+	Author           string       `json:"author"`
+	AuthorImageUrl   string       `json:"author_image_url"`
+	ContainsSpoiler  bool         `json:"containsSpoilers"`
+	BackDate         string       `json:"backdate"`
+	ShowName         string       `json:"showName"`
+	ShowBannerImage  string       `json:"showBannerImage"`
+	ShowSeasons      []ShowSeason `json:"showSeasons"`
+	ShowPremiereDate string       `json:"showPremiereDate"`
+	IsRewatched      bool         `json:"isRewatched"`
+	IsLogged         bool         `json:"isLogged"`
+	EpisodeNumber    int          `json:"episodeNumber"`
 }
 
 type ShowSeason struct {
