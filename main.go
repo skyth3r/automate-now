@@ -95,15 +95,30 @@ func main() {
 
 	reviews := diary.Reviews
 
-	var showNames []string
+	var shows []string
 
 	for r := range reviews {
+		var showAndSeason string
 		review := reviews[r]
-		if !slices.Contains(showNames, review.ShowName) {
-			showNames = append(showNames, review.ShowName)
+		reviewSesonID := review.SeasonID
+
+		// Loop through review.showSeasons to find season name using reviewSesonID
+		for s := range review.ShowSeasons {
+			season := review.ShowSeasons[s]
+			if reviewSesonID == season.ID {
+				review.SeasonName = season.Name
+			}
+		}
+
+		// format showName with SeasonName and store in output
+		showAndSeason = fmt.Sprintf("%v, %v", review.ShowName, review.SeasonName)
+
+		// Add show name to showNames array
+		if !slices.Contains(shows, showAndSeason) {
+			shows = append(shows, showAndSeason)
 		}
 	}
-	fmt.Printf("%v\n", showNames)
+	fmt.Printf("%v\n", shows)
 }
 
 func getFeedItems(input string) ([]gofeed.Item, error) {
