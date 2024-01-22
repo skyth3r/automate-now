@@ -13,19 +13,20 @@ import (
 
 type SerializdDiary struct {
 	Reviews      []SerializdDiaryReview `json:"reviews"`
-	TotalPages   int                    `json:"total_pages"`
-	TotalReviews int                    `json:"total_reviews"`
+	TotalPages   int                    `json:"totalPages"`
+	TotalReviews int                    `json:"totalReviews"`
 }
 
 type SerializdDiaryReview struct {
 	ID               int          `json:"id"`
-	ShowID           string       `json:"show_id"`
-	SeasonID         string       `json:"season_id"`
-	DateAdded        string       `json:"date_added"`
+	ShowID           int          `json:"showId"`
+	SeasonID         int          `json:"seasonId"`
+	SeasonName       string       `json:"seasonName"`
+	DateAdded        string       `json:"dateAdded"`
 	Rating           int          `json:"rating"`
-	ReviewText       string       `json:"review_text"`
+	ReviewText       string       `json:"reviewText"`
 	Author           string       `json:"author"`
-	AuthorImageUrl   string       `json:"author_image_url"`
+	AuthorImageUrl   string       `json:"authorImageUrl"`
 	ContainsSpoiler  bool         `json:"containsSpoilers"`
 	BackDate         string       `json:"backdate"`
 	ShowName         string       `json:"showName"`
