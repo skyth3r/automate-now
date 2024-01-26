@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"slices"
 
+	"github.com/Skyth3r/automate-now/urls"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -46,11 +47,9 @@ type ShowSeason struct {
 }
 
 func main() {
-	const letterboxdRSS = "https://letterboxd.com/akashgoswami/rss/"
-	const okuRSS = "https://oku.club/rss/collection/T8k9M"
-	const serializdDiaryJSON = "https://www.serializd.com/api/user/akashgoswami/diary"
 
-	latestMovieItems, err := getFeedItems(letterboxdRSS)
+	// Movies
+	latestMovieItems, err := getFeedItems(urls.LetterboxdRss)
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -66,7 +65,7 @@ func main() {
 
 	printMovieTitles(latestMovieItems, itemCount, re)
 
-	latestBookItems, err := getFeedItems(okuRSS)
+	latestBookItems, err := getFeedItems(urls.OkuRss)
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -76,7 +75,7 @@ func main() {
 	printBookInfo(latestBookItems, itemCount)
 
 	// TV Shows
-	rsp, err := http.Get(serializdDiaryJSON)
+	rsp, err := http.Get(urls.SerializdDiaryJson)
 	if err != nil {
 		log.Fatalf("unable to get json from serializd. Error: %v", err)
 	}
@@ -119,6 +118,8 @@ func main() {
 		}
 	}
 	fmt.Printf("%v\n", shows)
+
+	// Video games
 }
 
 func getFeedItems(input string) ([]gofeed.Item, error) {
