@@ -8,8 +8,10 @@ import (
 	"regexp"
 	"slices"
 
+	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/serializd"
 	"github.com/Skyth3r/automate-now/urls"
+	"github.com/gocolly/colly"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -87,6 +89,25 @@ func main() {
 	fmt.Printf("%v\n", shows)
 
 	// Video games
+	var currentGames []backloggd.CurrentGame
+	c := colly.NewCollector()
+
+	c.OnHTML("div.rating-hover", func(e *colly.HTMLElement) {
+		game := backloggd.CurrentGame{}
+
+		game.Name = e.ChildText("div.game-text-centered")
+		partialUrl := e.ChildAttr("a", "href")
+		game.Url = urls.BackloggdBase + partialUrl
+
+		currentGames = append(currentGames, game)
+	})
+
+	c.Visit(urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/")
+
+	for i := range currentGames {
+		fmt.Printf("%v\n", currentGames[i].Name)
+		fmt.Printf("%v\n", currentGames[i].Url)
+	}
 }
 
 func getFeedItems(input string) ([]gofeed.Item, error) {

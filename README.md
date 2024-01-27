@@ -41,4 +41,14 @@ Serializd does **not** provide an RSS feed for users but is it possible to retri
 
 For this script I've used the Diary API endpoint (`https://www.serializd.com/api/user/USERNAME_HERE/diary`) to retrieve recently watched TV shows that have been logged.
 
+**Logging episodes to your diary**
+
 To add an episode to your diary, click the 'Log/Review' button for the episode and add a date for when you watched the episode.
+
+### 🎮 [Backloggd](https://www.backloggd.com)
+Backloggd has no RSS feed or an API that be be used to get the games a user is currently playing. Instead this data can be obtained via web scraping a user's public 'playing' page.
+
+**Adding games to your playing page**
+
+Click the 'Playing' button on a games page on Backlogged to add it to your 'playing' page.
+
