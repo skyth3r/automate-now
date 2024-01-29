@@ -54,20 +54,9 @@ func main() {
 	printShows(shows, itemCount)
 
 	// Video games
-	var currentGames []backloggd.CurrentGame
-	c := colly.NewCollector()
+	backloggdUrl := urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/"
 
-	c.OnHTML("div.rating-hover", func(e *colly.HTMLElement) {
-		game := backloggd.CurrentGame{}
-
-		game.Name = e.ChildText("div.game-text-centered")
-		partialUrl := e.ChildAttr("a", "href")
-		game.Url = urls.BackloggdBase + partialUrl
-
-		currentGames = append(currentGames, game)
-	})
-
-	c.Visit(urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/")
+	currentGames := getBackloggdGames(backloggdUrl)
 
 	for i := range currentGames {
 		fmt.Printf("%v\n", currentGames[i].Name)
@@ -179,4 +168,24 @@ func printShows(items []string, count int) {
 	for i := 0; i < count; i++ {
 		fmt.Printf("%v\n", items[i])
 	}
+}
+
+func getBackloggdGames(url string) []backloggd.CurrentGame {
+	var currentGames []backloggd.CurrentGame
+
+	c := colly.NewCollector()
+
+	c.OnHTML("div.rating-hover", func(e *colly.HTMLElement) {
+		game := backloggd.CurrentGame{}
+
+		game.Name = e.ChildText("div.game-text-centered")
+		partialUrl := e.ChildAttr("a", "href")
+		game.Url = urls.BackloggdBase + partialUrl
+
+		currentGames = append(currentGames, game)
+	})
+
+	c.Visit(url)
+
+	return currentGames
 }
