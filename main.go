@@ -25,14 +25,7 @@ func main() {
 
 	itemCount := maxGoFeedItems(latestMovieItems)
 
-	// Regex pattern to remove ', YYYY - ★★★★' from movie titles
-	// This regex pattern looks for the following in a movie title:
-	// - `, 2020` (No rating given)
-	// - `, 2020 - ★★★★` (rating given)
-	const movieTitlePattern = `, (\d{4})(?: - ?[★]{0,5})?$`
-	re := regexp.MustCompile(movieTitlePattern)
-
-	printMovieTitles(latestMovieItems, itemCount, re)
+	printMovieTitles(latestMovieItems, itemCount)
 
 	latestBookItems, err := getGoFeedItems(urls.OkuRss)
 	if err != nil {
@@ -90,7 +83,14 @@ func maxGoFeedItems(items []gofeed.Item) int {
 	return max
 }
 
-func printMovieTitles(items []gofeed.Item, count int, re *regexp.Regexp) {
+func printMovieTitles(items []gofeed.Item, count int) {
+	// Regex pattern to remove ', YYYY - ★★★★' from movie titles
+	// This regex pattern looks for the following in a movie title:
+	// - `, 2020` (No rating given)
+	// - `, 2020 - ★★★★` (rating given)
+	const movieTitlePattern = `, (\d{4})(?: - ?[★]{0,5})?$`
+	re := regexp.MustCompile(movieTitlePattern)
+
 	for i := 0; i < count; i++ {
 		title := re.Split(items[i].Title, -1)
 		fmt.Printf("Title: %v\n", title[0])
