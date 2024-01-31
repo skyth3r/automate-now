@@ -8,23 +8,23 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetFeedItems_Success(t *testing.T) {
+func TestGetGoFeedItems_Success(t *testing.T) {
 	const mockRSS = "https://akashgoswami.com/index.xml"
 
-	_, err := getFeedItems(mockRSS)
+	_, err := getGoFeedItems(mockRSS)
 
 	require.Nil(t, err)
 }
 
-func TestGetFeedItems_Error(t *testing.T) {
+func TestGetGoFeedItems_Error(t *testing.T) {
 	const mockRSS = "https://akashgoswami.com/invalid_rss"
 
-	_, err := getFeedItems(mockRSS)
+	_, err := getGoFeedItems(mockRSS)
 
 	require.NotNil(t, err)
 }
 
-func TestMaxItems_MoreThanThreeItems(t *testing.T) {
+func TestMaxGoFeedItems_MoreThanThreeItems(t *testing.T) {
 	mockItems := []gofeed.Item{
 		{Title: "Title 1"},
 		{Title: "Title 2"},
@@ -34,12 +34,12 @@ func TestMaxItems_MoreThanThreeItems(t *testing.T) {
 
 	const expectedMax = 3
 
-	got := maxItems(mockItems)
+	got := maxGoFeedItems(mockItems)
 
 	require.Equal(t, expectedMax, got)
 }
 
-func TestMaxItems_LessThanThreeItems(t *testing.T) {
+func TestMaxGoFeedItems_LessThanThreeItems(t *testing.T) {
 	mockItems := []gofeed.Item{
 		{Title: "Title 1"},
 		{Title: "Title 2"},
@@ -47,12 +47,12 @@ func TestMaxItems_LessThanThreeItems(t *testing.T) {
 
 	const expectedMax = 2
 
-	got := maxItems(mockItems)
+	got := maxGoFeedItems(mockItems)
 
 	require.Equal(t, expectedMax, got)
 }
 
-func TestMaxItems_ExactlyThreeItems(t *testing.T) {
+func TestMaxGoFeedItems_ExactlyThreeItems(t *testing.T) {
 	mockItems := []gofeed.Item{
 		{Title: "Title 1"},
 		{Title: "Title 2"},
@@ -61,7 +61,7 @@ func TestMaxItems_ExactlyThreeItems(t *testing.T) {
 
 	const expectedMax = 3
 
-	got := maxItems(mockItems)
+	got := maxGoFeedItems(mockItems)
 
 	require.Equal(t, expectedMax, got)
 }
