@@ -31,10 +31,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
-
 	itemCount = maxGoFeedItems(latestBookItems)
-
-	printBookInfo(latestBookItems, itemCount)
+	books := booksInfo(latestBookItems, itemCount)
+	fmt.Println(books)
 
 	// TV Shows
 	shows, err := getShowNames(urls.SerializdDiaryJson)
@@ -118,13 +117,17 @@ func getMovieUrl(url string) string {
 	return match
 }
 
-func printBookInfo(items []gofeed.Item, count int) {
+func booksInfo(items []gofeed.Item, count int) []map[string]string {
+	var books = []map[string]string{}
+
 	for i := 0; i < count; i++ {
-		fmt.Println(items[i].Title)
-		fmt.Println(items[i].Link)
-		fmt.Println(items[i].Extensions["dc"]["creator"][0].Value) // author
-		fmt.Println(items[i].Extensions["oku"]["cover"][0].Value)  // book cover url
+		book := make(map[string]string)
+		book["title"] = items[i].Title
+		book["url"] = items[i].Link
+		books = append(books, book)
 	}
+
+	return books
 }
 
 func getShowNames(url string) ([]string, error) {
