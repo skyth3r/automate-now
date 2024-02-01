@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
+	"time"
 
 	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/serializd"
@@ -23,7 +26,6 @@ func main() {
 	}
 	itemCount := maxGoFeedItems(latestMovieItems)
 	movies := movieTitles(latestMovieItems, itemCount)
-	fmt.Println(movies)
 
 	// Books
 	latestBookItems, err := getGoFeedItems(urls.OkuRss)
@@ -32,7 +34,6 @@ func main() {
 	}
 	itemCount = maxGoFeedItems(latestBookItems)
 	books := booksInfo(latestBookItems, itemCount)
-	fmt.Println(books)
 
 	// TV Shows
 	showTitlesAndUrls, err := getShowDetails(urls.SerializdDiaryJson)
@@ -41,17 +42,61 @@ func main() {
 	}
 	itemCount = maxItems(showTitlesAndUrls)
 	shows := showDetails(showTitlesAndUrls, itemCount)
-	fmt.Println(shows)
 
 	// Video games
 	backloggdUrl := urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/"
-
 	currentGames := getBackloggdGames(backloggdUrl)
 
-	for i := range currentGames {
-		fmt.Printf("%v\n", currentGames[i].Name)
-		fmt.Printf("%v\n", currentGames[i].Url)
+	// formatting Books
+	booksHeader := "## 📚 Books\n"
+	var booksBody string
+	for i := range books {
+		book := formatMarkdownLink(books[i]["title"], books[i]["url"])
+		booksBody += fmt.Sprintf("%v\n", book)
 	}
+
+	moviesAndTvShowsHeader := "## 🎬 Movies and TV Shows\n"
+	// formatting Movies
+	moviesSubHeader := "### Recently watched movies\n"
+	var moviesBody string
+	for i := range movies {
+		movie := formatMarkdownLink(movies[i]["title"], movies[i]["url"])
+		moviesBody += fmt.Sprintf("%v\n", movie)
+	}
+	// formatting TV Shows
+	showsSubHeader := "### Recently watched TV shows\n"
+	var showsBody string
+	for i := range shows {
+		show := formatMarkdownLink(shows[i]["title"], shows[i]["url"])
+		showsBody += fmt.Sprintf("%v\n", show)
+	}
+
+	// formatting Video games
+	currentGamesHeader := "## 🎮 Video Games\n"
+	var currentGamesBody string
+	for i := range currentGames {
+		game := formatMarkdownLink(currentGames[i].Name, currentGames[i].Url)
+		currentGamesBody += fmt.Sprintf("%v\n", game)
+	}
+
+	// get date
+	date := time.Now().Format("2 Jan 2006")
+	updated := fmt.Sprintf("\nLast updated: %v", date)
+
+	// create now.md
+	file, err := os.Create("now.md")
+	if err != nil {
+		log.Fatalf("unable to create now.md file. Error: %v", err)
+	}
+	defer file.Close()
+
+	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, currentGamesHeader, currentGamesBody, updated)
+
+	_, err = io.WriteString(file, data)
+	if err != nil {
+		log.Fatalf("unable to write to now.md file. Error: %v", err)
+	}
+	file.Sync()
 
 }
 
@@ -201,6 +246,7 @@ func maxItems(items []map[string]string) int {
 	}
 	return max
 }
+
 func showDetails(items []map[string]string, count int) []map[string]string {
 	var cappedShows = []map[string]string{}
 	for i := 0; i < count; i++ {
@@ -228,4 +274,8 @@ func getBackloggdGames(url string) []backloggd.CurrentGame {
 	c.Visit(url)
 
 	return currentGames
+}
+
+func formatMarkdownLink(title string, url string) string {
+	return fmt.Sprintf("* [%v](%v)", title, url)
 }
