@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -10,7 +11,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/serializd"
 	"github.com/Skyth3r/automate-now/urls"
 	"github.com/gocolly/colly"
@@ -45,7 +45,10 @@ func main() {
 
 	// Video games
 	backloggdUrl := urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/"
-	currentGames := getBackloggdGames(backloggdUrl)
+	games, err := getBackloggdGames(backloggdUrl)
+	if err != nil {
+		log.Fatalf("unable to get games from Backloggd. Error: %v", err)
+	}
 
 	// formatting Books
 	booksHeader := "## 📚 Books\n"
@@ -72,11 +75,11 @@ func main() {
 	}
 
 	// formatting Video games
-	currentGamesHeader := "## 🎮 Video Games\n"
-	var currentGamesBody string
-	for i := range currentGames {
-		game := formatMarkdownLink(currentGames[i].Name, currentGames[i].Url)
-		currentGamesBody += fmt.Sprintf("%v\n", game)
+	gamesHeader := "## 🎮 Video Games\n"
+	var gamesBody string
+	for i := range games {
+		game := formatMarkdownLink(games[i]["title"], games[i]["url"])
+		gamesBody += fmt.Sprintf("%v\n", game)
 	}
 
 	// get date
@@ -90,7 +93,7 @@ func main() {
 	}
 	defer file.Close()
 
-	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, currentGamesHeader, currentGamesBody, updated)
+	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
 
 	_, err = io.WriteString(file, data)
 	if err != nil {
@@ -256,24 +259,26 @@ func showDetails(items []map[string]string, count int) []map[string]string {
 	return cappedShows
 }
 
-func getBackloggdGames(url string) []backloggd.CurrentGame {
-	var currentGames []backloggd.CurrentGame
+func getBackloggdGames(url string) ([]map[string]string, error) {
+	var games = []map[string]string{}
 
 	c := colly.NewCollector()
 
 	c.OnHTML("div.rating-hover", func(e *colly.HTMLElement) {
-		game := backloggd.CurrentGame{}
-
-		game.Name = e.ChildText("div.game-text-centered")
-		partialUrl := e.ChildAttr("a", "href")
-		game.Url = urls.BackloggdBase + partialUrl
-
-		currentGames = append(currentGames, game)
+		game := make(map[string]string)
+		game["title"] = e.ChildText("div.game-text-centered")
+		game["url"] = urls.BackloggdBase + e.ChildAttr("a", "href")
+		games = append(games, game)
 	})
 
 	c.Visit(url)
 
-	return currentGames
+	if len(games) == 0 {
+		err := errors.New("no games found")
+		return nil, err
+	}
+
+	return games, nil
 }
 
 func formatMarkdownLink(title string, url string) string {
