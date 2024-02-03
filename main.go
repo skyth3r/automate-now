@@ -52,35 +52,20 @@ func main() {
 
 	// formatting Books
 	booksHeader := "## 📚 Books\n"
-	var booksBody string
-	for i := range books {
-		book := formatMarkdownLink(books[i]["title"], books[i]["url"])
-		booksBody += fmt.Sprintf("%v\n", book)
-	}
+	booksBody := formatMediaItems(books)
 
 	moviesAndTvShowsHeader := "## 🎬 Movies and TV Shows\n"
 	// formatting Movies
 	moviesSubHeader := "### Recently watched movies\n"
-	var moviesBody string
-	for i := range movies {
-		movie := formatMarkdownLink(movies[i]["title"], movies[i]["url"])
-		moviesBody += fmt.Sprintf("%v\n", movie)
-	}
+	moviesBody := formatMediaItems(movies)
+
 	// formatting TV Shows
 	showsSubHeader := "### Recently watched TV shows\n"
-	var showsBody string
-	for i := range shows {
-		show := formatMarkdownLink(shows[i]["title"], shows[i]["url"])
-		showsBody += fmt.Sprintf("%v\n", show)
-	}
+	showsBody := formatMediaItems(shows)
 
 	// formatting Video games
 	gamesHeader := "## 🎮 Video Games\n"
-	var gamesBody string
-	for i := range games {
-		game := formatMarkdownLink(games[i]["title"], games[i]["url"])
-		gamesBody += fmt.Sprintf("%v\n", game)
-	}
+	gamesBody := formatMediaItems(games)
 
 	// get date
 	date := time.Now().Format("2 Jan 2006")
@@ -283,4 +268,13 @@ func getBackloggdGames(url string) ([]map[string]string, error) {
 
 func formatMarkdownLink(title string, url string) string {
 	return fmt.Sprintf("* [%v](%v)", title, url)
+}
+
+func formatMediaItems(mediaItems []map[string]string) string {
+	var mediaText string
+	for i := range mediaItems {
+		itemText := formatMarkdownLink(mediaItems[i]["title"], mediaItems[i]["url"])
+		mediaText += fmt.Sprintf("%v\n", itemText)
+	}
+	return mediaText
 }
