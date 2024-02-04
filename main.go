@@ -71,6 +71,11 @@ func main() {
 	date := time.Now().Format("2 Jan 2006")
 	updated := fmt.Sprintf("\nLast updated: %v", date)
 
+	staticContent, err := os.ReadFile("static.md")
+	if err != nil {
+		log.Fatalf("unable to read from static.md file. Error: %v", err)
+	}
+
 	// create now.md
 	file, err := os.Create("now.md")
 	if err != nil {
@@ -79,6 +84,7 @@ func main() {
 	defer file.Close()
 
 	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
+	data = fmt.Sprintf("%s\n\n%s", staticContent, data)
 
 	_, err = io.WriteString(file, data)
 	if err != nil {
