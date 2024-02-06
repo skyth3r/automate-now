@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -37,12 +35,12 @@ func main() {
 	books := latestFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
-	showTitlesAndUrls, err := getShowDetails(urls.SerializdDiaryJson)
+	showTitlesAndUrls, err := serializd.GetShows(urls.SerializdDiaryJson)
 	if err != nil {
 		log.Fatalf("unable to get shows from Serializd. Error: %v", err)
 	}
 	itemCount = maxItems(showTitlesAndUrls)
-	shows := showDetails(showTitlesAndUrls, itemCount)
+	shows := serializd.LatestShows(showTitlesAndUrls, itemCount)
 
 	// Video games
 	backloggdUrl := urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/"
@@ -137,71 +135,71 @@ func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
 	return itemSlice
 }
 
-func getShowDetails(url string) ([]map[string]string, error) {
-	var shows = []map[string]string{}
+// func getShowDetails(url string) ([]map[string]string, error) {
+// 	var shows = []map[string]string{}
 
-	rsp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer rsp.Body.Close()
+// 	rsp, err := http.Get(url)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rsp.Body.Close()
 
-	if rsp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %v", rsp.StatusCode)
-	}
+// 	if rsp.StatusCode != http.StatusOK {
+// 		return nil, fmt.Errorf("unexpected status code: %v", rsp.StatusCode)
+// 	}
 
-	var diary serializd.SerializdDiary
+// 	var diary serializd.SerializdDiary
 
-	err = json.NewDecoder(rsp.Body).Decode(&diary)
-	if err != nil {
-		return nil, err
-	}
+// 	err = json.NewDecoder(rsp.Body).Decode(&diary)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	reviews := diary.Reviews
+// 	reviews := diary.Reviews
 
-	for r := range reviews {
-		show := make(map[string]string)
-		var showAndSeason string
-		review := reviews[r]
-		reviewSeasonID := review.SeasonID
+// 	for r := range reviews {
+// 		show := make(map[string]string)
+// 		var showAndSeason string
+// 		review := reviews[r]
+// 		reviewSeasonID := review.SeasonID
 
-		// Loop through review.showSeasons to find season name using reviewSesonID
-		for s := range review.ShowSeasons {
-			season := review.ShowSeasons[s]
-			if reviewSeasonID == season.ID {
-				review.SeasonName = season.Name
-			}
-		}
+// 		// Loop through review.showSeasons to find season name using reviewSesonID
+// 		for s := range review.ShowSeasons {
+// 			season := review.ShowSeasons[s]
+// 			if reviewSeasonID == season.ID {
+// 				review.SeasonName = season.Name
+// 			}
+// 		}
 
-		// format showName with SeasonName and store in output
-		showAndSeason = fmt.Sprintf("%v, %v", review.ShowName, review.SeasonName)
-		show["title"] = showAndSeason
-		//fmt.Printf("Show Title: %v\n", showAndSeason)
+// 		// format showName with SeasonName and store in output
+// 		showAndSeason = fmt.Sprintf("%v, %v", review.ShowName, review.SeasonName)
+// 		show["title"] = showAndSeason
+// 		//fmt.Printf("Show Title: %v\n", showAndSeason)
 
-		// get show url
-		const showBaseUrl = "https://www.serializd.com/show/"
-		showUrl := showBaseUrl + fmt.Sprint(review.ShowID)
-		show["url"] = showUrl
+// 		// get show url
+// 		const showBaseUrl = "https://www.serializd.com/show/"
+// 		showUrl := showBaseUrl + fmt.Sprint(review.ShowID)
+// 		show["url"] = showUrl
 
-		// Append show to shows if shows["title'"] is not present in the map
-		if !containsValue(shows, "title", show["title"]) {
-			shows = append(shows, show)
-		}
-	}
+// 		// Append show to shows if shows["title'"] is not present in the map
+// 		if !containsValue(shows, "title", show["title"]) {
+// 			shows = append(shows, show)
+// 		}
+// 	}
 
-	return shows, nil
-}
+// 	return shows, nil
+// }
 
-func containsValue(slice []map[string]string, key, value string) bool {
-	for _, m := range slice {
-		if _, ok := m[key]; ok {
-			if val, ok := m[key]; ok && val == value {
-				return true
-			}
-		}
-	}
-	return false
-}
+// func containsValue(slice []map[string]string, key, value string) bool {
+// 	for _, m := range slice {
+// 		if _, ok := m[key]; ok {
+// 			if val, ok := m[key]; ok && val == value {
+// 				return true
+// 			}
+// 		}
+// 	}
+// 	return false
+// }
 
 func maxItems(items []map[string]string) int {
 	max := 3
@@ -211,14 +209,14 @@ func maxItems(items []map[string]string) int {
 	return max
 }
 
-func showDetails(items []map[string]string, count int) []map[string]string {
-	var cappedShows = []map[string]string{}
-	for i := 0; i < count; i++ {
-		cappedShows = append(cappedShows, items[i])
-		//fmt.Printf("%v\n", items[i])
-	}
-	return cappedShows
-}
+// func showDetails(items []map[string]string, count int) []map[string]string {
+// 	var cappedShows = []map[string]string{}
+// 	for i := 0; i < count; i++ {
+// 		cappedShows = append(cappedShows, items[i])
+// 		//fmt.Printf("%v\n", items[i])
+// 	}
+// 	return cappedShows
+// }
 
 func getBackloggdGames(url string) ([]map[string]string, error) {
 	var games = []map[string]string{}
