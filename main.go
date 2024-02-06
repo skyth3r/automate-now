@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/Skyth3r/automate-now/letterboxd"
@@ -25,7 +26,7 @@ func main() {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
 	itemCount := maxGoFeedItems(latestMovieItems)
-	movies := letterboxd.MovieTitles(latestMovieItems, itemCount)
+	movies := latestFeedItems(latestMovieItems, itemCount)
 
 	// Books
 	latestBookItems, err := getGoFeedItems(urls.OkuRss)
@@ -33,7 +34,7 @@ func main() {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
 	itemCount = maxGoFeedItems(latestBookItems)
-	books := booksInfo(latestBookItems, itemCount)
+	books := latestFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
 	showTitlesAndUrls, err := getShowDetails(urls.SerializdDiaryJson)
@@ -119,17 +120,21 @@ func maxGoFeedItems(items []gofeed.Item) int {
 	return max
 }
 
-func booksInfo(items []gofeed.Item, count int) []map[string]string {
-	var books = []map[string]string{}
+func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
+	var itemSlice = []map[string]string{}
 
 	for i := 0; i < count; i++ {
-		book := make(map[string]string)
-		book["title"] = items[i].Title
-		book["url"] = items[i].Link
-		books = append(books, book)
+		item := make(map[string]string)
+		if strings.HasPrefix(items[i].Link, "https://letterboxd.com") {
+			item["title"] = letterboxd.GetMovieTitle(items[i].Title)
+			item["url"] = letterboxd.GetMovieUrl(items[i].Link)
+		} else {
+			item["title"] = items[i].Title
+			item["url"] = items[i].Link
+		}
+		itemSlice = append(itemSlice, item)
 	}
-
-	return books
+	return itemSlice
 }
 
 func getShowDetails(url string) ([]map[string]string, error) {
