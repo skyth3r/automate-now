@@ -21,7 +21,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
-	itemCount := maxGoFeedItems(latestMovieItems)
+	itemCount := maxItems(latestMovieItems)
 	movies := latestFeedItems(latestMovieItems, itemCount)
 
 	// Books
@@ -29,7 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
-	itemCount = maxGoFeedItems(latestBookItems)
+	itemCount = maxItems(latestBookItems)
 	books := latestFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
@@ -107,14 +107,6 @@ func getGoFeedItems(input string) ([]gofeed.Item, error) {
 	return feedItems, nil
 }
 
-func maxGoFeedItems(items []gofeed.Item) int {
-	max := 3 // Maximum number of movies to retrieve from feed
-	if len(items) < max {
-		max = len(items)
-	}
-	return max
-}
-
 func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
 	var itemSlice = []map[string]string{}
 
@@ -132,14 +124,6 @@ func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
 	return itemSlice
 }
 
-func maxItems(items []map[string]string) int {
-	max := 3
-	if len(items) < max {
-		max = len(items)
-	}
-	return max
-}
-
 func formatMarkdownLink(title string, url string) string {
 	return fmt.Sprintf("* [%v](%v)", title, url)
 }
@@ -151,4 +135,12 @@ func formatMediaItems(mediaItems []map[string]string) string {
 		mediaText += fmt.Sprintf("%v\n", itemText)
 	}
 	return mediaText
+}
+
+func maxItems[T gofeed.Item | map[string]string](items []T) int {
+	limit := 3
+	if len(items) < limit {
+		limit = len(items)
+	}
+	return limit
 }
