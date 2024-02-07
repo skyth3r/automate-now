@@ -6,4 +6,5 @@ const (
 	backloggdUsername  = "akashgoswami"
 	okuCollectionID    = "T8k9M"
 	OkuUrl             = "https://oku.club/rss/collection/"
+	nomadlistUsername  = "USERNAME_HERE"
 )
