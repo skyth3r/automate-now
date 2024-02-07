@@ -11,14 +11,13 @@ import (
 	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/letterboxd"
 	"github.com/Skyth3r/automate-now/serializd"
-	"github.com/Skyth3r/automate-now/urls"
 	"github.com/mmcdole/gofeed"
 )
 
 func main() {
 
 	// Movies
-	latestMovieItems, err := getGoFeedItems(urls.LetterboxdRss)
+	latestMovieItems, err := getGoFeedItems(letterboxdRss)
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -26,7 +25,7 @@ func main() {
 	movies := latestFeedItems(latestMovieItems, itemCount)
 
 	// Books
-	latestBookItems, err := getGoFeedItems(urls.OkuRss)
+	latestBookItems, err := getGoFeedItems(okuRss)
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -34,7 +33,7 @@ func main() {
 	books := latestFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
-	showTitlesAndUrls, err := serializd.GetShows(urls.SerializdDiaryJson)
+	showTitlesAndUrls, err := serializd.GetShows(serializdDiaryJson)
 	if err != nil {
 		log.Fatalf("unable to get shows from Serializd. Error: %v", err)
 	}
@@ -42,7 +41,7 @@ func main() {
 	shows := serializd.LatestShows(showTitlesAndUrls, itemCount)
 
 	// Video games
-	backloggdUrl := urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/"
+	backloggdUrl := backloggd.Url + "/u/" + backloggdUsername + "/playing/"
 	games, err := backloggd.GetGames(backloggdUrl)
 	if err != nil {
 		log.Fatalf("unable to get games from Backloggd. Error: %v", err)

@@ -3,9 +3,10 @@ package backloggd
 import (
 	"errors"
 
-	"github.com/Skyth3r/automate-now/urls"
 	"github.com/gocolly/colly"
 )
+
+const Url = "https://backloggd.com"
 
 func GetGames(url string) ([]map[string]string, error) {
 	var games = []map[string]string{}
@@ -15,7 +16,7 @@ func GetGames(url string) ([]map[string]string, error) {
 	c.OnHTML("div.rating-hover", func(e *colly.HTMLElement) {
 		game := make(map[string]string)
 		game["title"] = e.ChildText("div.game-text-centered")
-		game["url"] = urls.BackloggdBase + e.ChildAttr("a", "href")
+		game["url"] = Url + e.ChildAttr("a", "href")
 		games = append(games, game)
 	})
 
