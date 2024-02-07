@@ -17,7 +17,7 @@ import (
 func main() {
 
 	// Movies
-	latestMovieItems, err := getGoFeedItems(letterboxdRss)
+	latestMovieItems, err := getGoFeedItems(letterboxd.Url + letterboxdUsername + "/rss/")
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -25,7 +25,7 @@ func main() {
 	movies := latestFeedItems(latestMovieItems, itemCount)
 
 	// Books
-	latestBookItems, err := getGoFeedItems(okuRss)
+	latestBookItems, err := getGoFeedItems(OkuUrl + okuCollectionID)
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -33,7 +33,7 @@ func main() {
 	books := latestFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
-	showTitlesAndUrls, err := serializd.GetShows(serializdDiaryJson)
+	showTitlesAndUrls, err := serializd.GetShows(serializd.Url + serializdUsername + "/diary")
 	if err != nil {
 		log.Fatalf("unable to get shows from Serializd. Error: %v", err)
 	}
@@ -41,8 +41,7 @@ func main() {
 	shows := serializd.LatestShows(showTitlesAndUrls, itemCount)
 
 	// Video games
-	backloggdUrl := backloggd.Url + "/u/" + backloggdUsername + "/playing/"
-	games, err := backloggd.GetGames(backloggdUrl)
+	games, err := backloggd.GetGames(backloggd.Url + "/u/" + backloggdUsername + "/playing/")
 	if err != nil {
 		log.Fatalf("unable to get games from Backloggd. Error: %v", err)
 	}

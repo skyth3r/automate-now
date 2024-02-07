@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+const Url = "https://www.serializd.com/api/user/"
+
 func GetShows(url string) ([]map[string]string, error) {
 	var shows = []map[string]string{}
 	var diary SerializdDiary
