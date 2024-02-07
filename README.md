@@ -52,3 +52,11 @@ Backloggd has no RSS feed or an API that be be used to get the games a user is c
 
 Click the 'Playing' button on a games page on Backlogged to add it to your 'playing' page.
 
+### ✈️ [Nomadlist](https://nomadlist.com/)
+Nomadlist has a public endpoint for user profiles that displays data in JSON. User profiles contain a history of past countries visited/trips.
+
+This data can be accessed via `https://nomadlist.com/USERNAME_HERE.json`
+
+**Adding a trip to your trip history**
+
+Go to your profile and fill out the trip start, end date, city and then click Add trip. 

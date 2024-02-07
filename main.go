@@ -5,11 +5,13 @@ import (
 	"io"
 	"log"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/letterboxd"
+	"github.com/Skyth3r/automate-now/nomadlist"
 	"github.com/Skyth3r/automate-now/serializd"
 	"github.com/mmcdole/gofeed"
 )
@@ -46,6 +48,24 @@ func main() {
 		log.Fatalf("unable to get games from Backloggd. Error: %v", err)
 	}
 
+	// Travel
+	countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json", nomadlist.Url, nomadlistUsername))
+	if err != nil {
+		log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
+	}
+
+	// formatting Travel
+	travelHeader := "## 🌏 Travel\n"
+	countriesIn2023SubHeader := "### 2023\n"
+	tripsIn2023 := nomadlist.TripsInYear(countries, "2023")
+	countriesIn2023 := removeDupes(tripsIn2023)
+	countriesIn2023Body := formatCountries(countriesIn2023)
+
+	countriesIn2024SubHeader := "### 2024\n"
+	tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
+	countriesIn2024 := removeDupes(tripsIn2024)
+	countriesIn2024Body := formatCountries(countriesIn2024)
+
 	// formatting Books
 	booksHeader := "## 📚 Books\n"
 	booksBody := formatMediaItems(books)
@@ -79,7 +99,7 @@ func main() {
 	}
 	defer file.Close()
 
-	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
+	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", travelHeader, countriesIn2024SubHeader, countriesIn2024Body, countriesIn2023SubHeader, countriesIn2023Body, booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
 	data = fmt.Sprintf("%s\n\n%s", staticContent, data)
 
 	_, err = io.WriteString(file, data)
@@ -124,6 +144,30 @@ func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
 	return itemSlice
 }
 
+func removeDupes(trips []map[string]string) []map[string]string {
+	var countries []map[string]string
+
+	for _, trip := range trips {
+		// check if a trip["name"] is present in the slice countries
+		if !containsValue(countries, "name", trip["name"]) {
+			countries = append(countries, trip)
+		}
+	}
+
+	return countries
+}
+
+func containsValue(slice []map[string]string, key, value string) bool {
+	for _, m := range slice {
+		if _, ok := m[key]; ok {
+			if val, ok := m[key]; ok && val == value {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func formatMarkdownLink(title string, url string) string {
 	return fmt.Sprintf("* [%v](%v)", title, url)
 }
@@ -135,6 +179,19 @@ func formatMediaItems(mediaItems []map[string]string) string {
 		mediaText += fmt.Sprintf("%v\n", itemText)
 	}
 	return mediaText
+}
+
+func formatCountries(countries []map[string]string) string {
+	var formattedText string
+
+	slices.Reverse(countries)
+
+	for i := range countries {
+		countryText := fmt.Sprintf("* %s\n", countries[i]["name"])
+		formattedText += countryText
+	}
+
+	return formattedText
 }
 
 func maxItems[T gofeed.Item | map[string]string](items []T) int {
