@@ -4,6 +4,8 @@ import (
 	"regexp"
 )
 
+const Url = "https://letterboxd.com/"
+
 func GetMovieTitle(input string) string {
 	// Regex pattern to remove ', YYYY - ★★★★' from movie titles
 	// This regex pattern looks for the following in a movie title:
