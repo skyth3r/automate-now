@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -9,10 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/letterboxd"
 	"github.com/Skyth3r/automate-now/serializd"
 	"github.com/Skyth3r/automate-now/urls"
-	"github.com/gocolly/colly"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -44,7 +43,7 @@ func main() {
 
 	// Video games
 	backloggdUrl := urls.BackloggdBase + "/u/" + urls.BackloggdUsername + "/playing/"
-	games, err := getBackloggdGames(backloggdUrl)
+	games, err := backloggd.GetGames(backloggdUrl)
 	if err != nil {
 		log.Fatalf("unable to get games from Backloggd. Error: %v", err)
 	}
@@ -141,28 +140,6 @@ func maxItems(items []map[string]string) int {
 		max = len(items)
 	}
 	return max
-}
-
-func getBackloggdGames(url string) ([]map[string]string, error) {
-	var games = []map[string]string{}
-
-	c := colly.NewCollector()
-
-	c.OnHTML("div.rating-hover", func(e *colly.HTMLElement) {
-		game := make(map[string]string)
-		game["title"] = e.ChildText("div.game-text-centered")
-		game["url"] = urls.BackloggdBase + e.ChildAttr("a", "href")
-		games = append(games, game)
-	})
-
-	c.Visit(url)
-
-	if len(games) == 0 {
-		err := errors.New("no games found")
-		return nil, err
-	}
-
-	return games, nil
 }
 
 func formatMarkdownLink(title string, url string) string {
