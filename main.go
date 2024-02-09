@@ -54,36 +54,38 @@ func main() {
 		log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
 	}
 
-	// formatting Travel
+	// Formatting Travel
 	travelHeader := "## 🌏 Travel\n"
+	// 2023 travel
 	countriesIn2023SubHeader := "### 2023\n"
 	tripsIn2023 := nomadlist.TripsInYear(countries, "2023")
 	countriesIn2023 := removeDupes(tripsIn2023)
 	countriesIn2023Body := formatCountries(countriesIn2023)
-
+	// 2024 travel
 	countriesIn2024SubHeader := "### 2024\n"
 	tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
 	countriesIn2024 := removeDupes(tripsIn2024)
 	countriesIn2024Body := formatCountries(countriesIn2024)
 
-	// formatting Books
+	// Formatting Books
 	booksHeader := "## 📚 Books\n"
 	booksBody := formatMediaItems(books)
 
+	// Formatting Movies and TV Shows
 	moviesAndTvShowsHeader := "## 🎬 Movies and TV Shows\n"
-	// formatting Movies
+	// Formatting Movies
 	moviesSubHeader := "### Recently watched movies\n"
 	moviesBody := formatMediaItems(movies)
 
-	// formatting TV Shows
+	// Formatting TV Shows
 	showsSubHeader := "### Recently watched TV shows\n"
 	showsBody := formatMediaItems(shows)
 
-	// formatting Video games
+	// Formatting Video games
 	gamesHeader := "## 🎮 Video Games\n"
 	gamesBody := formatMediaItems(games)
 
-	// get date
+	// Get today's date
 	date := time.Now().Format("2 Jan 2006")
 	updated := fmt.Sprintf("\nLast updated: %v", date)
 
@@ -92,7 +94,7 @@ func main() {
 		log.Fatalf("unable to read from static.md file. Error: %v", err)
 	}
 
-	// create now.md
+	// Create now.md
 	file, err := os.Create("now.md")
 	if err != nil {
 		log.Fatalf("unable to create now.md file. Error: %v", err)
@@ -106,12 +108,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to write to now.md file. Error: %v", err)
 	}
-	file.Sync()
+	err = file.Sync()
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
 
 }
 
 func getGoFeedItems(input string) ([]gofeed.Item, error) {
-	feedItems := []gofeed.Item{}
+	var feedItems []gofeed.Item
 
 	feedParser := gofeed.NewParser()
 	feed, err := feedParser.ParseURL(input)
@@ -128,7 +133,7 @@ func getGoFeedItems(input string) ([]gofeed.Item, error) {
 }
 
 func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
-	var itemSlice = []map[string]string{}
+	var itemSlice []map[string]string
 
 	for i := 0; i < count; i++ {
 		item := make(map[string]string)

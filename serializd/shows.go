@@ -9,7 +9,7 @@ import (
 const Url = "https://www.serializd.com/api/user/"
 
 func GetShows(url string) ([]map[string]string, error) {
-	var shows = []map[string]string{}
+	var shows []map[string]string
 	var diary SerializdDiary
 
 	rsp, err := http.Get(url)
@@ -35,7 +35,7 @@ func GetShows(url string) ([]map[string]string, error) {
 		review := reviews[r]
 		reviewSeasonID := review.SeasonID
 
-		// Loop through review.showSeasons to find season name using reviewSesonID
+		// Loop through review.showSeasons to find season name using review.SeasonID
 		for s := range review.ShowSeasons {
 			season := review.ShowSeasons[s]
 			if reviewSeasonID == season.ID {
@@ -52,7 +52,7 @@ func GetShows(url string) ([]map[string]string, error) {
 		showUrl := showBaseUrl + fmt.Sprint(review.ShowID)
 		show["url"] = showUrl
 
-		// Append show to shows if shows["title'"] is not present in the map
+		// Append show to shows if shows["title"] is not present in the map
 		if !containsValue(shows, "title", show["title"]) {
 			shows = append(shows, show)
 		}
@@ -62,7 +62,7 @@ func GetShows(url string) ([]map[string]string, error) {
 }
 
 func LatestShows(items []map[string]string, count int) []map[string]string {
-	var shows = []map[string]string{}
+	var shows []map[string]string
 	for i := 0; i < count; i++ {
 		shows = append(shows, items[i])
 	}

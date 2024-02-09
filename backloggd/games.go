@@ -9,7 +9,7 @@ import (
 const Url = "https://backloggd.com"
 
 func GetGames(url string) ([]map[string]string, error) {
-	var games = []map[string]string{}
+	var games []map[string]string
 
 	c := colly.NewCollector()
 
@@ -20,7 +20,10 @@ func GetGames(url string) ([]map[string]string, error) {
 		games = append(games, game)
 	})
 
-	c.Visit(url)
+	err := c.Visit(url)
+	if err != nil {
+		return nil, err
+	}
 
 	if len(games) == 0 {
 		err := errors.New("no games found")
