@@ -24,7 +24,7 @@ func main() {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
 	itemCount := maxItems(latestMovieItems)
-	movies := latestFeedItems(latestMovieItems, itemCount)
+	movies := latestGoFeedItems(latestMovieItems, itemCount)
 
 	// Books
 	latestBookItems, err := getGoFeedItems(fmt.Sprintf("%s%s", OkuUrl, okuCollectionID))
@@ -32,7 +32,7 @@ func main() {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
 	itemCount = maxItems(latestBookItems)
-	books := latestFeedItems(latestBookItems, itemCount)
+	books := latestGoFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
 	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary", serializd.Url, serializdUsername))
@@ -132,7 +132,7 @@ func getGoFeedItems(input string) ([]gofeed.Item, error) {
 	return feedItems, nil
 }
 
-func latestFeedItems(items []gofeed.Item, count int) []map[string]string {
+func latestGoFeedItems(items []gofeed.Item, count int) []map[string]string {
 	var itemSlice []map[string]string
 
 	for i := 0; i < count; i++ {
