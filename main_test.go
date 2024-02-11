@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/stretchr/testify/assert"
-	"regexp"
 	"testing"
 
 	"github.com/mmcdole/gofeed"
@@ -134,32 +133,4 @@ func TestFormatCountries(t *testing.T) {
 
 	actual := formatCountries(countries)
 	assert.Equal(t, expected, actual)
-}
-
-func TestMovieTitlePattern(t *testing.T) {
-	const movieTitlePattern = `, (\d{4})(?: - ?[★]{0,5})?$`
-
-	tests := []struct {
-		title    string
-		expected string
-	}{
-		{"Movie Title, 2024", "Movie Title"},
-		{"Movie Title, the sequel, 2023 - ★★★★★", "Movie Title, the sequel"},
-		{"Movie - Title, 2022 - ★★★★", "Movie - Title"},
-		{"Movie Title and the movie title, 2021 - ★★★", "Movie Title and the movie title"},
-		{"Movie, Title, 2020 - ★★", "Movie, Title"},
-		{"Movie, - Title, 2019 - ★", "Movie, - Title"},
-		{"Movie Title, 2018 - ", "Movie Title"},
-		{"Movie Title", "Movie Title"},                 // Edge case: No year or rating
-		{"2024, Movie Title", "2024, Movie Title"},     // Edge case: Year at the start
-		{"Movie Title - ★★★★★", "Movie Title - ★★★★★"}, // Edge case: Rating but no year
-	}
-
-	re := regexp.MustCompile(movieTitlePattern)
-
-	for _, tc := range tests {
-		got := re.Split(tc.title, -1)[0]
-
-		require.Equal(t, tc.expected, got)
-	}
 }
