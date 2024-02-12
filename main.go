@@ -13,6 +13,7 @@ import (
 	"github.com/Skyth3r/automate-now/letterboxd"
 	"github.com/Skyth3r/automate-now/nomadlist"
 	"github.com/Skyth3r/automate-now/serializd"
+	emoji "github.com/jayco/go-emoji-flag"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -192,7 +193,11 @@ func formatCountries(countries []map[string]string) string {
 	slices.Reverse(countries)
 
 	for i := range countries {
-		countryText := fmt.Sprintf("* %s\n", countries[i]["name"])
+		if countries[i]["code"] == "UK" {
+			countries[i]["code"] = "GB"
+		}
+		countryEmoji := emoji.GetFlag(countries[i]["code"])
+		countryText := fmt.Sprintf("%s %s\n", countryEmoji, countries[i]["name"])
 		formattedText += countryText
 	}
 
