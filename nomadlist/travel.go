@@ -32,6 +32,7 @@ func GetTravel(url string) ([]map[string]string, error) {
 	for t := range trips {
 		country := make(map[string]string)
 		country["name"] = trips[t].Country
+		country["place"] = trips[t].Place
 		country["code"] = trips[t].CountryCode
 		country["start_date"] = trips[t].DateStart
 		countries = append(countries, country)

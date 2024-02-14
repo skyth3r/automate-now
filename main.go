@@ -60,11 +60,14 @@ func main() {
 	// 2023 travel
 	countriesIn2023SubHeader := "### 2023\n"
 	tripsIn2023 := nomadlist.TripsInYear(countries, "2023")
+	tripsIn2023 = removeLondonTrips(tripsIn2023)
+	tripsIn2023 = addScotlandTrip2023(tripsIn2023)
 	countriesIn2023 := removeDupes(tripsIn2023)
 	countriesIn2023Body := formatCountries(countriesIn2023)
 	// 2024 travel
 	countriesIn2024SubHeader := "### 2024\n"
 	tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
+	tripsIn2024 = removeLondonTrips(tripsIn2024)
 	countriesIn2024 := removeDupes(tripsIn2024)
 	countriesIn2024Body := formatCountries(countriesIn2024)
 
@@ -102,7 +105,7 @@ func main() {
 	}
 	defer file.Close()
 
-	data := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", travelHeader, countriesIn2024SubHeader, countriesIn2024Body, countriesIn2023SubHeader, countriesIn2023Body, booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
+	data := fmt.Sprintf("%s\n%s\n%s%s\n%s%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", travelHeader, countriesIn2024SubHeader, countriesIn2024Body, countriesIn2023SubHeader, countriesIn2023Body, booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
 	data = fmt.Sprintf("%s\n\n%s", staticContent, data)
 
 	_, err = io.WriteString(file, data)
@@ -113,6 +116,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
+	moveFile()
 
 }
 
@@ -189,6 +193,7 @@ func formatMediaItems(mediaItems []map[string]string) string {
 
 func formatCountries(countries []map[string]string) string {
 	var formattedText string
+	var countryEmoji string
 
 	slices.Reverse(countries)
 
@@ -196,8 +201,12 @@ func formatCountries(countries []map[string]string) string {
 		if countries[i]["code"] == "UK" {
 			countries[i]["code"] = "GB"
 		}
-		countryEmoji := emoji.GetFlag(countries[i]["code"])
-		countryText := fmt.Sprintf("%s %s\n", countryEmoji, countries[i]["name"])
+		if countries[i]["name"] == "Scotland" {
+			countryEmoji = "\U0001F3F4\U000E0067\U000E0062\U000E0073\U000E0063\U000E0074\U000E007F"
+		} else {
+			countryEmoji = emoji.GetFlag(countries[i]["code"])
+		}
+		countryText := fmt.Sprintf("%s %s\n\n", countryEmoji, countries[i]["name"])
 		formattedText += countryText
 	}
 
