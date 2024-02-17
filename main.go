@@ -179,7 +179,14 @@ func containsValue(slice []map[string]string, key, value string) bool {
 }
 
 func formatMarkdownLink(title string, url string) string {
+	title = escapeMarkdown(title)
 	return fmt.Sprintf("* [%v](%v)", title, url)
+}
+
+func escapeMarkdown(text string) string {
+	return strings.NewReplacer(
+		"&", "and",
+	).Replace(text)
 }
 
 func formatMediaItems(mediaItems []map[string]string) string {
