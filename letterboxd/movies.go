@@ -6,7 +6,7 @@ import (
 
 const (
 	Url                  = "https://letterboxd.com/"
-	movieTitlePattern    = `, (\d{4})(?: - ?[★]{0,5})?$`
+	movieTitlePattern    = `, (\d{4})(?: - ?[★]{0,5}(½)?)?$`
 	movieUrlWithUsername = `https:\/\/letterboxd\.com\/([^\/]+)\/`
 )
 
