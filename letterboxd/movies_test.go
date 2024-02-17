@@ -1,8 +1,9 @@
 package letterboxd
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetMovieTitle(t *testing.T) {
@@ -16,6 +17,7 @@ func TestGetMovieTitle(t *testing.T) {
 		{"Movie Title and the movie title, 2021 - ★★★", "Movie Title and the movie title"},
 		{"Movie, Title, 2020 - ★★", "Movie, Title"},
 		{"Movie, - Title, 2019 - ★", "Movie, - Title"},
+		{"The Movie, 2023 - ★★½", "The Movie"},
 		{"Movie Title, 2018 - ", "Movie Title"},
 		{"Movie Title", "Movie Title"},                 // Edge case: No year or rating
 		{"2024, Movie Title", "2024, Movie Title"},     // Edge case: Year at the start
