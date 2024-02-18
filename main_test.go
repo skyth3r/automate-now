@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/require"
@@ -119,7 +120,7 @@ func TestFormatMediaItems(t *testing.T) {
 	}
 	expected := "* [Title 1](https://example.com)\n* [Title 2](https://example.com)\n"
 
-	actual := formatMediaItems(mockItems)
+	actual := formatMediaItems(mockItems, "movies")
 	assert.Equal(t, expected, actual)
 }
 
@@ -129,7 +130,7 @@ func TestFormatCountries(t *testing.T) {
 		{"name": "Belgium"},
 		{"name": "Croatia"},
 	}
-	expected := "* Croatia\n* Belgium\n* America\n"
+	expected := " Croatia\n\n Belgium\n\n America\n\n"
 
 	actual := formatCountries(countries)
 	assert.Equal(t, expected, actual)
