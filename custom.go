@@ -1,6 +1,9 @@
 package main
 
-import "os"
+import (
+	"log"
+	"os"
+)
 
 func removeLondonTrips(countries []map[string]string) []map[string]string {
 	var filteredCountries []map[string]string
@@ -28,6 +31,8 @@ func addScotlandTrip2023(countries []map[string]string) []map[string]string {
 	return filteredCountries
 }
 
-func moveFile() {
-	os.Rename("now.md", "../content/now.md")
+func moveFile(fileName, filePath string) {
+	if err := os.Rename(fileName, filePath); err != nil {
+		log.Fatalf("unable to move %s to '%s'. Error: %v", fileName, filePath, err)
+	}
 }
