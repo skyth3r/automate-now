@@ -73,21 +73,21 @@ func main() {
 
 	// Formatting Books
 	booksHeader := "## 📚 Books\n"
-	booksBody := formatMediaItems(books)
+	booksBody := formatMediaItems(books, "books")
 
 	// Formatting Movies and TV Shows
 	moviesAndTvShowsHeader := "## 🎬 Movies and TV Shows\n"
 	// Formatting Movies
 	moviesSubHeader := "### Recently watched movies\n"
-	moviesBody := formatMediaItems(movies)
+	moviesBody := formatMediaItems(movies, "movies")
 
 	// Formatting TV Shows
 	showsSubHeader := "### Recently watched TV shows\n"
-	showsBody := formatMediaItems(shows)
+	showsBody := formatMediaItems(shows, "tv shows")
 
 	// Formatting Video games
 	gamesHeader := "## 🎮 Video Games\n"
-	gamesBody := formatMediaItems(games)
+	gamesBody := formatMediaItems(games, "video games")
 
 	// Get today's date
 	date := time.Now().Format("2 Jan 2006")
@@ -105,7 +105,7 @@ func main() {
 	}
 	defer file.Close()
 
-	data := fmt.Sprintf("%s\n%s\n%s%s\n%s%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", travelHeader, countriesIn2024SubHeader, countriesIn2024Body, countriesIn2023SubHeader, countriesIn2023Body, booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
+	data := fmt.Sprintf("%s\n%s\n%s%s\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", travelHeader, countriesIn2024SubHeader, countriesIn2024Body, countriesIn2023SubHeader, countriesIn2023Body, booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
 	data = fmt.Sprintf("%s\n\n%s", staticContent, data)
 
 	_, err = io.WriteString(file, data)
@@ -189,13 +189,29 @@ func escapeMarkdown(text string) string {
 	).Replace(text)
 }
 
-func formatMediaItems(mediaItems []map[string]string) string {
+func formatMediaItems(mediaItems []map[string]string, mediaType string) string {
 	var mediaText string
-	for i := range mediaItems {
-		itemText := formatMarkdownLink(mediaItems[i]["title"], mediaItems[i]["url"])
-		mediaText += fmt.Sprintf("%v\n", itemText)
+
+	// check for empty state mediaItems maps
+	if len(mediaItems) == 0 {
+		switch mediaType {
+		case "movies":
+			mediaText = fmt.Sprintf("%v\n", "Haven't watched any movies recently")
+		case "books":
+			mediaText = fmt.Sprintf("%v\n", "Currently not reading a book")
+		case "tv shows":
+			mediaText = fmt.Sprintf("%v\n", "Haven't watched any TV shows recently")
+		case "video games":
+			mediaText = fmt.Sprintf("%v\n", "Haven't played any video games recently")
+		}
+		return mediaText
+	} else {
+		for i := range mediaItems {
+			itemText := formatMarkdownLink(mediaItems[i]["title"], mediaItems[i]["url"])
+			mediaText += fmt.Sprintf("%v\n", itemText)
+		}
+		return mediaText
 	}
-	return mediaText
 }
 
 func formatCountries(countries []map[string]string) string {
