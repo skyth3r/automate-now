@@ -165,6 +165,9 @@ func latestGoFeedItems(items []gofeed.Item, count int) []map[string]string {
 func removeDupes(trips []map[string]string) []map[string]string {
 	var countries []map[string]string
 
+	// sorts trips from oldest to newest
+	slices.Reverse(trips)
+
 	for _, trip := range trips {
 		// check if a trip["name"] is present in the slice countries
 		if !containsValue(countries, "name", trip["name"]) {
@@ -225,8 +228,6 @@ func formatMediaItems(mediaItems []map[string]string, mediaType string) string {
 func formatCountries(countries []map[string]string) string {
 	var formattedText string
 	var countryEmoji string
-
-	slices.Reverse(countries)
 
 	for i := range countries {
 		if countries[i]["code"] == "UK" {
