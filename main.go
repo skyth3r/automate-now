@@ -14,13 +14,21 @@ import (
 	"github.com/Skyth3r/automate-now/nomadlist"
 	"github.com/Skyth3r/automate-now/serializd"
 	emoji "github.com/jayco/go-emoji-flag"
+	"github.com/joho/godotenv"
 	"github.com/mmcdole/gofeed"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 
 func main() {
 
 	// Movies
-	latestMovieItems, err := getGoFeedItems(fmt.Sprintf("%s%s/rss/", letterboxd.Url, letterboxdUsername))
+	latestMovieItems, err := getGoFeedItems(fmt.Sprintf("%s%s/rss/", letterboxd.Url, os.Getenv("LETTERBOXDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -28,7 +36,7 @@ func main() {
 	movies := latestGoFeedItems(latestMovieItems, itemCount)
 
 	// Books
-	latestBookItems, err := getGoFeedItems(fmt.Sprintf("%s%s", OkuUrl, okuCollectionID))
+	latestBookItems, err := getGoFeedItems(fmt.Sprintf("%s%s", OkuUrl, os.Getenv("OKUCOLLECTIONID")))
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -36,7 +44,7 @@ func main() {
 	books := latestGoFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
-	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary", serializd.Url, serializdUsername))
+	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary", serializd.Url, os.Getenv("SERIALIZDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get shows from Serializd. Error: %v", err)
 	}
@@ -44,13 +52,13 @@ func main() {
 	shows := serializd.LatestShows(showTitlesAndUrls, itemCount)
 
 	// Video games
-	games, err := backloggd.GetGames(fmt.Sprintf("%s/u/%s/playing/", backloggd.Url, backloggdUsername))
+	games, err := backloggd.GetGames(fmt.Sprintf("%s/u/%s/playing/", backloggd.Url, os.Getenv("BACKLOGGDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get games from Backloggd. Error: %v", err)
 	}
 
 	// Travel
-	countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json", nomadlist.Url, nomadlistUsername))
+	countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json", nomadlist.Url, os.Getenv("NOMADLISTUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
 	}
