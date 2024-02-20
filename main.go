@@ -44,7 +44,7 @@ func main() {
 	books := latestGoFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
-	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary", serializd.Url, os.Getenv("SERIALIZEDUSERNAME")))
+	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary", serializd.Url, os.Getenv("SERIALIZDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get shows from Serializd. Error: %v", err)
 	}
