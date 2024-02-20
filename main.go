@@ -28,7 +28,7 @@ func init() {
 func main() {
 
 	// Movies
-	latestMovieItems, err := getGoFeedItems(fmt.Sprintf("%s%s/rss/\n", letterboxd.Url, os.Getenv("LETTERBOXDUSERNAME")))
+	latestMovieItems, err := getGoFeedItems(fmt.Sprintf("%s%s/rss/", letterboxd.Url, os.Getenv("LETTERBOXDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -36,7 +36,7 @@ func main() {
 	movies := latestGoFeedItems(latestMovieItems, itemCount)
 
 	// Books
-	latestBookItems, err := getGoFeedItems(fmt.Sprintf("%s%s\n", OkuUrl, os.Getenv("OKUCOLLECTIONID")))
+	latestBookItems, err := getGoFeedItems(fmt.Sprintf("%s%s", OkuUrl, os.Getenv("OKUCOLLECTIONID")))
 	if err != nil {
 		log.Fatalf("unable to parse rss url. Error: %v", err)
 	}
@@ -44,7 +44,7 @@ func main() {
 	books := latestGoFeedItems(latestBookItems, itemCount)
 
 	// TV Shows
-	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary\n", serializd.Url, os.Getenv("SERIALIZEDUSERNAME")))
+	showTitlesAndUrls, err := serializd.GetShows(fmt.Sprintf("%s%s/diary", serializd.Url, os.Getenv("SERIALIZEDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get shows from Serializd. Error: %v", err)
 	}
@@ -52,13 +52,13 @@ func main() {
 	shows := serializd.LatestShows(showTitlesAndUrls, itemCount)
 
 	// Video games
-	games, err := backloggd.GetGames(fmt.Sprintf("%s/u/%s/playing/\n", backloggd.Url, os.Getenv("BACKLOGGDUSERNAME")))
+	games, err := backloggd.GetGames(fmt.Sprintf("%s/u/%s/playing/", backloggd.Url, os.Getenv("BACKLOGGDUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get games from Backloggd. Error: %v", err)
 	}
 
 	// Travel
-	countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json\n", nomadlist.Url, os.Getenv("NOMADLISTUSERNAME")))
+	countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json", nomadlist.Url, os.Getenv("NOMADLISTUSERNAME")))
 	if err != nil {
 		log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
 	}
