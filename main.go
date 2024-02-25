@@ -211,28 +211,35 @@ func formatMediaItems(mediaItems []map[string]string, mediaType string) string {
 	if len(mediaItems) == 0 {
 		switch mediaType {
 		case "movies":
-			mediaText = fmt.Sprintf("%v\n", "Haven't watched any movies recently")
+			mediaText = NoMovies
 		case "books":
-			mediaText = fmt.Sprintf("%v\n", "Currently not reading a book")
+			mediaText = NoBooks
 		case "tv shows":
-			mediaText = fmt.Sprintf("%v\n", "Haven't watched any TV shows recently")
+			mediaText = NoTvShows
 		case "video games":
-			mediaText = fmt.Sprintf("%v\n", "Haven't played any video games recently")
-		}
-		return mediaText
-	} else {
-		for i := range mediaItems {
-			itemText := formatMarkdownLink(mediaItems[i]["title"], mediaItems[i]["url"])
-			mediaText += fmt.Sprintf("%v\n", itemText)
+			mediaText = NoVideoGames
 		}
 		mediaText += "\n"
 		return mediaText
 	}
+
+	for i := range mediaItems {
+		itemText := formatMarkdownLink(mediaItems[i]["title"], mediaItems[i]["url"])
+		mediaText += fmt.Sprintf("%v\n", itemText)
+	}
+	mediaText += "\n"
+	return mediaText
+
 }
 
 func formatCountries(countries []map[string]string) string {
 	var formattedText string
 	var countryEmoji string
+
+	if len(countries) == 0 {
+		formattedText = NoCountries + "\n\n"
+		return formattedText
+	}
 
 	for i := range countries {
 		if countries[i]["code"] == "UK" {
