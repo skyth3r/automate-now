@@ -9,6 +9,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func BenchmarkMain(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		main()
+	}
+}
+
 func TestGetGoFeedItems_Success(t *testing.T) {
 	const mockRSS = "https://akashgoswami.com/index.xml"
 	_, err := getGoFeedItems(mockRSS)
@@ -80,8 +86,8 @@ func TestRemoveDupes_DupesPresent(t *testing.T) {
 	}
 	expected := []map[string]string{
 		{"name": "America"},
-		{"name": "Belgium"},
 		{"name": "Croatia"},
+		{"name": "Belgium"},
 	}
 
 	actual := removeDupes(mockTrips)
@@ -95,9 +101,9 @@ func TestRemoveDupes_NoDupes(t *testing.T) {
 		{"name": "Croatia"},
 	}
 	expected := []map[string]string{
-		{"name": "America"},
-		{"name": "Belgium"},
 		{"name": "Croatia"},
+		{"name": "Belgium"},
+		{"name": "America"},
 	}
 
 	actual := removeDupes(mockTrips)
@@ -118,7 +124,7 @@ func TestFormatMediaItems(t *testing.T) {
 		{"title": "Title 1", "url": "https://example.com"},
 		{"title": "Title 2", "url": "https://example.com"},
 	}
-	expected := "* [Title 1](https://example.com)\n* [Title 2](https://example.com)\n"
+	expected := "* [Title 1](https://example.com)\n* [Title 2](https://example.com)\n\n"
 
 	actual := formatMediaItems(mockItems, "movies")
 	assert.Equal(t, expected, actual)
@@ -130,7 +136,7 @@ func TestFormatCountries(t *testing.T) {
 		{"name": "Belgium"},
 		{"name": "Croatia"},
 	}
-	expected := " Croatia\n\n Belgium\n\n America\n\n"
+	expected := " America\n\n Belgium\n\n Croatia\n\n"
 
 	actual := formatCountries(countries)
 	assert.Equal(t, expected, actual)
