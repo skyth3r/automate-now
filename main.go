@@ -63,43 +63,48 @@ func main() {
 		log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
 	}
 
+	var dataString strings.Builder
 	// Formatting Travel
-	travelHeader := "## 🌏 Travel\n"
+	dataString.WriteString("## 🌏 Travel\n\n")
+
+	// 2024 travel
+	dataString.WriteString("### 2024\n\n")
+	tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
+	tripsIn2024 = removeLondonTrips(tripsIn2024)
+	countriesIn2024 := removeDupes(tripsIn2024)
+	dataString.WriteString(formatCountries(countriesIn2024))
+
 	// 2023 travel
-	countriesIn2023SubHeader := "### 2023\n"
+	dataString.WriteString("### 2023\n\n")
 	tripsIn2023 := nomadlist.TripsInYear(countries, "2023")
 	tripsIn2023 = removeLondonTrips(tripsIn2023)
 	tripsIn2023 = addScotlandTrip2023(tripsIn2023)
 	countriesIn2023 := removeDupes(tripsIn2023)
-	countriesIn2023Body := formatCountries(countriesIn2023)
-	// 2024 travel
-	countriesIn2024SubHeader := "### 2024\n"
-	tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
-	tripsIn2024 = removeLondonTrips(tripsIn2024)
-	countriesIn2024 := removeDupes(tripsIn2024)
-	countriesIn2024Body := formatCountries(countriesIn2024)
+	dataString.WriteString(formatCountries(countriesIn2023))
 
 	// Formatting Books
-	booksHeader := "## 📚 Books\n"
-	booksBody := formatMediaItems(books, "books")
+	dataString.WriteString("## 📚 Books\n\n")
+	dataString.WriteString(formatMediaItems(books, "books"))
 
 	// Formatting Movies and TV Shows
-	moviesAndTvShowsHeader := "## 🎬 Movies and TV Shows\n"
+	dataString.WriteString("## 🎬 Movies and TV Shows\n\n")
 	// Formatting Movies
-	moviesSubHeader := "### Recently watched movies\n"
-	moviesBody := formatMediaItems(movies, "movies")
+	dataString.WriteString("### Recently watched movies\n\n")
+	dataString.WriteString(formatMediaItems(movies, "movies"))
 
 	// Formatting TV Shows
-	showsSubHeader := "### Recently watched TV shows\n"
-	showsBody := formatMediaItems(shows, "tv shows")
+	dataString.WriteString("### Recently watched TV shows\n\n")
+	dataString.WriteString(formatMediaItems(shows, "tv shows"))
 
 	// Formatting Video games
-	gamesHeader := "## 🎮 Video Games\n"
-	gamesBody := formatMediaItems(games, "video games")
+	dataString.WriteString("## 🎮 Video Games\n\n")
+	dataString.WriteString(formatMediaItems(games, "video games"))
 
+	dataString.WriteString("---\n\n")
 	// Get today's date
 	date := time.Now().Format("2 Jan 2006")
-	updated := fmt.Sprintf("\nLast updated: %v", date)
+	dataString.WriteString("Last updated: ")
+	dataString.WriteString(date)
 
 	staticContent, err := os.ReadFile("static.md")
 	if err != nil {
@@ -113,8 +118,7 @@ func main() {
 	}
 	defer file.Close()
 
-	data := fmt.Sprintf("%s\n%s\n%s%s\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n---\n%s", travelHeader, countriesIn2024SubHeader, countriesIn2024Body, countriesIn2023SubHeader, countriesIn2023Body, booksHeader, booksBody, moviesAndTvShowsHeader, moviesSubHeader, moviesBody, showsSubHeader, showsBody, gamesHeader, gamesBody, updated)
-	data = fmt.Sprintf("%s\n\n%s", staticContent, data)
+	data := fmt.Sprintf("%s\n\n%s", staticContent, dataString.String())
 
 	_, err = io.WriteString(file, data)
 	if err != nil {
@@ -221,6 +225,7 @@ func formatMediaItems(mediaItems []map[string]string, mediaType string) string {
 			itemText := formatMarkdownLink(mediaItems[i]["title"], mediaItems[i]["url"])
 			mediaText += fmt.Sprintf("%v\n", itemText)
 		}
+		mediaText += "\n"
 		return mediaText
 	}
 }
