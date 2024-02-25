@@ -1,8 +1,16 @@
 # Automate /now
 
-My attempts at automating my [/now page](https://akashgoswami.com/now).
+A script to automate my [/now page](https://akashgoswami.com/now).
 
 Inspired by [Robb Knight](https://rknight.me/blog/automating-my-now-page/) and [Sophie Koonin](https://localghost.dev/blog/everything-should-have-an-api-adventures-in-trying-to-automate-stuff/). 
+
+## Usage
+
+1. Rename `.env_example` to `.env`
+2. Update `.env` with your username for each service and your Oku collection ID
+3. Rename `static_example.md` to `static.md`
+4. Update the contents of `static.md` to your liking
+5. Run script with `go run ./`
 
 ## Data sources
 Getting data from various services isn't easy. A lot of services and platforms do not offer a viable way of retrieving your data. 
