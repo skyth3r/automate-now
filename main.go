@@ -128,7 +128,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	moveFile("now.md", "../content/now.md")
+	//moveFile("now.md", "../content/now.md")
 
 }
 
