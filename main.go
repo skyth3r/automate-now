@@ -66,6 +66,7 @@ func main() {
 	var dataString strings.Builder
 	// Formatting Travel
 	dataString.WriteString("## 🌏 Travel\n\n")
+	dataString.WriteString("*Data sourced from [Nomadlist](https://nomadlist.com/)*\n\n")
 
 	// 2024 travel
 	dataString.WriteString("### 2024\n\n")
@@ -84,20 +85,24 @@ func main() {
 
 	// Formatting Books
 	dataString.WriteString("## 📚 Books\n\n")
+	dataString.WriteString("*Data sourced from [Oku](https://oku.club/)*\n\n")
 	dataString.WriteString(formatMediaItems(books, "books"))
 
 	// Formatting Movies and TV Shows
 	dataString.WriteString("## 🎬 Movies and TV Shows\n\n")
 	// Formatting Movies
 	dataString.WriteString("### Recently watched movies\n\n")
+	dataString.WriteString("*Data sourced from [Letterboxd](https://letterboxd.com/)*\n\n")
 	dataString.WriteString(formatMediaItems(movies, "movies"))
 
 	// Formatting TV Shows
 	dataString.WriteString("### Recently watched TV shows\n\n")
+	dataString.WriteString("*Data sourced from [Serializd](https://www.serializd.com/)*\n\n")
 	dataString.WriteString(formatMediaItems(shows, "tv shows"))
 
 	// Formatting Video games
 	dataString.WriteString("## 🎮 Video Games\n\n")
+	dataString.WriteString("*Data sourced from [Backloggd](https://backloggd.com/)*\n\n")
 	dataString.WriteString(formatMediaItems(games, "video games"))
 
 	dataString.WriteString("---\n\n")
