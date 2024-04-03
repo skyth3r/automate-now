@@ -1,8 +1,10 @@
 package serializd
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -12,7 +14,28 @@ func GetShows(url string) ([]map[string]string, error) {
 	var shows []map[string]string
 	var diary SerializdDiary
 
-	rsp, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// Request headers
+	req.Header.Set("Accept", "application/json, text/plain, */*")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br, zstd")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.9")
+	req.Header.Set("Dnt", "1")
+	req.Header.Set("Referer", url)
+	req.Header.Set("Sec-Ch-Ua", `"Chromium";v="123", "Not:A-Brand";v="8"`)
+	req.Header.Set("Sec-Ch-Ua-Mobile", "?1")
+	req.Header.Set("Sec-Ch-Ua-Platform", `"Android"`)
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Mobile Safari/537.36")
+	req.Header.Set("X-Requested-With", "serializd_vercel")
+
+	client := &http.Client{}
+	rsp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -22,8 +45,25 @@ func GetShows(url string) ([]map[string]string, error) {
 		return nil, fmt.Errorf("unexpected status code: %v", rsp.StatusCode)
 	}
 
-	err = json.NewDecoder(rsp.Body).Decode(&diary)
+	// Check if the response is gzipped
+	var reader io.Reader
+	if rsp.Header.Get("Content-Encoding") == "gzip" {
+		gz, err := gzip.NewReader(rsp.Body)
+		if err != nil {
+			return nil, err
+		}
+		defer gz.Close()
+		reader = gz
+	} else {
+		reader = rsp.Body
+	}
+
+	body, err := io.ReadAll(reader)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(body, &diary); err != nil {
 		return nil, err
 	}
 
