@@ -1,5 +1,7 @@
 # Automate /now
 
+📌 [A deep dive into how I built this script.](https://akashgoswami.dev/posts/automating-my-now-page/)
+
 A script to automate my [/now page](https://akashgoswami.com/now).
 
 Inspired by [Robb Knight](https://rknight.me/blog/automating-my-now-page/) and [Sophie Koonin](https://localghost.dev/blog/everything-should-have-an-api-adventures-in-trying-to-automate-stuff/). 
