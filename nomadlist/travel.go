@@ -12,7 +12,16 @@ func GetTravel(url string) ([]map[string]string, error) {
 	var countries []map[string]string
 	var nomadListProfile Profile
 
-	rsp, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// Request headers
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36")
+
+	client := &http.Client{}
+	rsp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
