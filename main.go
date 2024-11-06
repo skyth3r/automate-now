@@ -204,9 +204,15 @@ func formatMarkdownLink(title string, url string) string {
 }
 
 func escapeMarkdown(text string) string {
-	return strings.NewReplacer(
+	text = strings.NewReplacer(
 		"&", "and",
 	).Replace(text)
+
+	text = strings.NewReplacer(
+		"'", "\\'",
+	).Replace(text)
+
+	return text
 }
 
 func formatMediaItems(mediaItems []map[string]string, mediaType string) string {
