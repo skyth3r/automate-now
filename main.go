@@ -11,7 +11,6 @@ import (
 
 	"github.com/Skyth3r/automate-now/backloggd"
 	"github.com/Skyth3r/automate-now/letterboxd"
-	"github.com/Skyth3r/automate-now/nomadlist"
 	"github.com/Skyth3r/automate-now/serializd"
 	emoji "github.com/jayco/go-emoji-flag"
 	"github.com/joho/godotenv"
@@ -58,30 +57,75 @@ func main() {
 	}
 
 	// Travel
-	countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json", nomadlist.Url, os.Getenv("NOMADLISTUSERNAME")))
-	if err != nil {
-		log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
-	}
+	// countries, err := nomadlist.GetTravel(fmt.Sprintf("%s%s.json", nomadlist.Url, os.Getenv("NOMADLISTUSERNAME")))
+	// if err != nil {
+	// 	log.Fatalf("unable to get countries from Nomadlist. Error: %v", err)
+	// }
 
 	var dataString strings.Builder
 	// Formatting Travel
-	dataString.WriteString("## 🌏 Travel\n\n")
-	dataString.WriteString("*Data sourced from [Nomadlist](https://nomadlist.com/)*\n\n")
+	// dataString.WriteString("## 🌏 Travel\n\n")
+	// dataString.WriteString("*Data sourced from [Nomadlist](https://nomadlist.com/)*\n\n")
+
+	// Get current year
+	// currentYear := time.Now().Format("2006")
+
+	// Get trips in current year, if there are no trips in current year, check the previous year
+	// var trips []map[string]string
+	// for {
+	// 	trips = nomadlist.TripsInYear(countries, currentYear)
+	// 	if len(trips) > 0 {
+	// 		break
+	// 	}
+	// 	currentYear = time.Now().AddDate(0, 0, -1).Format("2006")
+	// }
+
+	// latest year wth trips
+	// year := currentYear
+	// dataString.WriteString(fmt.Sprintf("### %s\n\n", year))
+	// trips = removeLondonTrips(trips)
+	// countriesVisited := removeDupes(trips)
+	// dataString.WriteString(formatCountries(countriesVisited))
+
+	// decrease currentYear by 1
+	// year = time.Now().AddDate(0, 0, -1).Format("2006")
+	// trips = nil
+
+	// check trips in currentYear, if there are no trips in current year, check the previous year
+	// for {
+	// 	trips = nomadlist.TripsInYear(countries, year)
+	// 	if len(trips) > 0 {
+	// 		break
+	// 	}
+	// 	year = time.Now().AddDate(0, 0, -1).Format("2006")
+	// }
+
+	// latest previous year travel
+	// replace 2023 with currentYear in dataString.WriteString("### 2023\n\n")
+	// dataString.WriteString(fmt.Sprintf("### %s\n\n", currentYear))
+	// tripsInPreviousYear := nomadlist.TripsInYear(countries, currentYear)
+	// tripsInPreviousYear = removeLondonTrips(tripsInPreviousYear)
+	// check if currentYear is 2023
+	// if currentYear == "2023" {
+	// 	tripsInPreviousYear = addScotlandTrip2023(tripsInPreviousYear)
+	// }
+	// countriesInPreviousYear := removeDupes(tripsInPreviousYear)
+	// dataString.WriteString(formatCountries(countriesInPreviousYear))
 
 	// 2024 travel
-	dataString.WriteString("### 2024\n\n")
-	tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
-	tripsIn2024 = removeLondonTrips(tripsIn2024)
-	countriesIn2024 := removeDupes(tripsIn2024)
-	dataString.WriteString(formatCountries(countriesIn2024))
+	// dataString.WriteString("### 2024\n\n")
+	// tripsIn2024 := nomadlist.TripsInYear(countries, "2024")
+	// tripsIn2024 = removeLondonTrips(tripsIn2024)
+	// countriesIn2024 := removeDupes(tripsIn2024)
+	// dataString.WriteString(formatCountries(countriesIn2024))
 
 	// 2023 travel
-	dataString.WriteString("### 2023\n\n")
-	tripsIn2023 := nomadlist.TripsInYear(countries, "2023")
-	tripsIn2023 = removeLondonTrips(tripsIn2023)
-	tripsIn2023 = addScotlandTrip2023(tripsIn2023)
-	countriesIn2023 := removeDupes(tripsIn2023)
-	dataString.WriteString(formatCountries(countriesIn2023))
+	// dataString.WriteString("### 2023\n\n")
+	// tripsIn2023 := nomadlist.TripsInYear(countries, "2023")
+	// tripsIn2023 = removeLondonTrips(tripsIn2023)
+	// tripsIn2023 = addScotlandTrip2023(tripsIn2023)
+	// countriesIn2023 := removeDupes(tripsIn2023)
+	// dataString.WriteString(formatCountries(countriesIn2023))
 
 	// Formatting Books
 	dataString.WriteString("## 📚 Books\n\n")
