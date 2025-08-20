@@ -237,6 +237,10 @@ func escapeMarkdown(text string) string {
 		"'", "\\'",
 	).Replace(text)
 
+	text = strings.NewReplacer(
+		"…", "\\…",
+	).Replace(text)
+
 	return text
 }
 
