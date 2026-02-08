@@ -1,8 +1,6 @@
 package backloggd
 
 import (
-	"errors"
-
 	"github.com/gocolly/colly"
 )
 
@@ -22,11 +20,6 @@ func GetGames(url string) ([]map[string]string, error) {
 
 	err := c.Visit(url)
 	if err != nil {
-		return nil, err
-	}
-
-	if len(games) == 0 {
-		err := errors.New("no games found")
 		return nil, err
 	}
 
