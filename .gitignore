@@ -1,1 +1,9 @@
+.gitignore
 .env
+.idea
+now.md
+static.md
+static_example.md
+automate-now
+package-lock.json
+.DS_Store
