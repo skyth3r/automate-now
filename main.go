@@ -39,9 +39,6 @@ func main() {
 
 	// Books
 	latestBookItems, err := getGoFeedItems(fmt.Sprintf("%s%s", OkuUrl, os.Getenv("OKUCOLLECTIONID")))
-	if err != nil {
-		log.Fatalf("unable to parse rss url. Error: %v", err)
-	}
 	itemCount = maxItems(latestBookItems)
 	books := latestGoFeedItems(latestBookItems, itemCount)
 
